@@ -89,4 +89,5 @@ document.addEventListener('DOMContentLoaded', ()=>{
 function enterButtonClicked() {
   var audio = new Audio('https://cdn.onlypuppy7.online/music.m4a');
   audio.play();
+  audio.loop();
 };
