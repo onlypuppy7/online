@@ -92,18 +92,68 @@ blockquote p:last-child {
 
 /* Full size background image */
 html, #container, .inner { background-color:transparent;}
-html {
-  background:url(background.jpg) center center no-repeat fixed;
-  background-size:cover;
-}
 body {
+  background-color: #b2b0b3;
   max-width:800px;
   margin:25px auto;
 }
 header, #content, footer { 
-  background: rgba(0,0,0,.8); 
+  background: rgba(0,0,0,.5); 
   padding:25px;
   color:#FFFFFF; 
+}
+
+#textStuff {
+  margin-top: -150%;
+  transition: margin-top 2s cubic-bezier(0.25, 0.5, 0.5, 1);
+}
+
+#textStuff.slide-in {
+  margin-top: 0;
+}
+
+#dvd {
+  position: absolute;
+  width: 200px;
+  height: auto;
+  z-index: -1;
+  filter: brightness(100%);
+  
+}    #overlay {
+  position: fixed; /* Position it on top */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black; /* Black background */
+  color: white; /* White text */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+  z-index: 9999; /* Make sure it's on top */
+}
+
+#overlay h1 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+#overlay button {
+  background-color: #ff4081;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.2em;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+#overlay button:hover {
+  background-color: #f50057;
 }
 
 /* Menu Links */

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2818177666449823"
+     crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>onlypuppy7 is online!</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #b2b0b3;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            position: relative;
+        }
+        #dvd {
+            position: absolute;
+            width: 200px;
+            height: auto;
+            z-index: -1;
+            filter: brightness(100%);
+        }
+        #centered-text {
+            color: black;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .links {
+            display: flex;
+            flex-direction: column; /* Changed to vertical */
+            align-items: center; /* Center align items vertically */
+        }
+        .links a {
+            margin: 10px 0; /* Added margin between buttons */
+            color: black;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 15px 0; /* Adjusted padding */
+            border-radius: 10px; /* Made border-radius more boxy */
+            background-color: rgba(240, 240, 240, 0.8); /* Semi-transparent background */
+            transition: background-color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            border: none; /* Removed default button border */
+            cursor: pointer; /* Added cursor pointer */
+            width: 120%; /* Fixed width for all buttons */
+            justify-content: center; /* Center content horizontally */
+        }
+        .links a:hover {
+            background-color: rgba(204, 204, 204, 0.8); /* Semi-transparent background on hover */
+        }
+        .button-text {
+            margin-left: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div id="centered-text">onlypuppy7.online - wow!</div>
+    <img id="dvd" src="https://cdn.onlypuppy7.online/onlypuppy7_transparent_cropped_red.png">
+    <div class="links">
+        <a href="https://shell.onlypuppy7.online">
+            <span>Shell Shockers Proxy</span>
+            <span class="button-text">Play without restrictions</span>
+        </a>
+        <a href="https://forum.onlypuppy7.online">
+            <span>Forum</span>
+            <span class="button-text">The most pointless forum on earth!</span>
+        </a>
+        <a href="https://map.onlypuppy7.online">
+            <span>Shell Shockers Map Builder</span>
+            <span class="button-text">Fun tool</span>
+        </a>
+        <a href="https://reddit.onlypuppy7.online">
+            <span>RedLib</span>
+            <span class="button-text">Free Reddit Proxy</span>
+        </a>
+        <a href="https://chat.onlypuppy7.online">
+            <span>Chatroom</span>
+            <span class="button-text">Join the "discussion"</span>
+        </a>
+    </div>
+    <audio autoplay loop>
+        <source src="https://cdn.onlypuppy7.online/music.m4a" type="audio/mp4">
+        Your browser does not support the audio element.
+    </audio>
+    <script>
+        const dvd = document.getElementById('dvd');
+        const text = document.getElementById('centered-text');
+        
+        let x = 0;
+        let y = 0;
+        let dx = 2;
+        let dy = 2;
+        let colorIndex = 0; // Index to track color changes
+
+        function animateDVD() {
+            x += dx;
+            y += dy;
+
+            const maxX = window.innerWidth - dvd.clientWidth;
+            const maxY = window.innerHeight - dvd.clientHeight;
+
+            if (x >= maxX || x <= 0) {
+                dx = -dx + ((Math.random()*2)-1);
+                dy = dy + ((Math.random()*2)-1);
+                changeColor();
+            }
+            if (y >= maxY || y <= 0) {
+                dx = dx + ((Math.random()*2)-1);
+                dy = -dy + ((Math.random()*2)-1);
+                changeColor();
+            }
+
+            dvd.style.left = x + 'px';
+            dvd.style.top = y + 'px';
+
+            requestAnimationFrame(animateDVD);
+        }
+
+        function changeColor() {
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#800000', '#008000', '#000080', '#808000', '#800080', '#008080', '#c0c0c0', '#808080', '#800000', '#ff0000', '#800080', '#ff00ff', '#000080', '#0000ff', '#00ffff', '#008080', '#00ff00', '#008000', '#808000', '#ffff00', '#808080', '#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#800000', '#808000', '#800080', '#008000', '#008080', '#000080']; // Example colors, add more as needed
+            colorIndex = Math.floor(Math.random() * colors.length);
+            dvd.style.filter = `brightness(100%) hue-rotate(${colorIndex * (360 / colors.length)}deg)`; // Rotate through colors
+        }
+
+        animateDVD();
+    </script>
+</body>
+</html>
