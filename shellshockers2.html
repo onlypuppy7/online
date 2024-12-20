@@ -1,0 +1,311 @@
+<html><head><base href="https://shellshockers.ai"><title>Shell Shockers 2 - Egg-streme Combat</title>
+<style>
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #1a1a2e;
+  color: #e94560;
+  height: 100%;
+  overflow: hidden;
+}
+#gameCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+#hud {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 18px;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+#crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+#menu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(26, 26, 46, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+button {
+  background-color: #e94560;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+button:hover {
+  background-color: #ff6b6b;
+}
+#ammo {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 18px;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+</style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+<div id="hud">Score: <span id="score">0</span></div>
+<div id="ammo">Ammo: <span id="ammoCount">10</span></div>
+<img id="crosshair" src="https://cdn.onlypuppy7.online/shellshockers2/crosshair.png" alt="Crosshair">
+<div id="menu" style="display:none;">
+  <h1>Shell Shockers 2</h1>
+  <h3>Built by onlypuppy7</h3>
+  <button id="startButton">Start Game</button>
+  <button id="instructionsButton">Instructions</button>
+</div>
+
+<script src="https://cdn.onlypuppy7.online/shellshockers2/three.min.js"></script>
+<script>
+let scene, camera, renderer, player, eggs = [], score = 0, ammo = 10;
+let moveForward = false, moveBackward = false, moveLeft = false, moveRight = false, canJump = false;
+
+function init() {
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  
+  renderer = new THREE.WebGLRenderer({canvas: document.getElementById('gameCanvas')});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  // Castle walls
+  createWall(0, 5, -50, 100, 10, 1);  // Back wall
+  createWall(-50, 5, 0, 1, 10, 100);  // Left wall
+  createWall(50, 5, 0, 1, 10, 100);   // Right wall
+  createWall(0, 5, 50, 100, 10, 1);   // Front wall
+  
+  // Castle towers
+  createTower(-45, 10, -45);
+  createTower(-45, 10, 45);
+  createTower(45, 10, -45);
+  createTower(45, 10, 45);
+  
+  // Stairs
+  createStairs(-40, 0, 0, 10, 5, 20);
+  createStairs(40, 0, 0, 10, 5, 20);
+  
+  // Castle floor
+  const floorGeometry = new THREE.PlaneGeometry(100, 100);
+  const floorTexture = new THREE.TextureLoader().load('https://cdn.onlypuppy7.online/shellshockers2/floor.jpg');
+  floorTexture.wrapS = THREE.RepeatWrapping;
+  floorTexture.wrapT = THREE.RepeatWrapping;
+  floorTexture.repeat.set(10, 10);
+  const floorMaterial = new THREE.MeshBasicMaterial({map: floorTexture});
+  const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+  floor.rotation.x = -Math.PI / 2;
+  scene.add(floor);
+
+  // Player (gun)
+  const gunGeometry = new THREE.BoxGeometry(0.2, 0.2, 1);
+  const gunMaterial = new THREE.MeshBasicMaterial({color: 0x8b4513});
+  player = new THREE.Mesh(gunGeometry, gunMaterial);
+  player.position.set(0, 2, 0);
+  scene.add(player);
+  camera.position.set(0, 2, 0);
+
+  // Eggs
+  for (let i = 0; i < 10; i++) {
+    createEgg();
+  }
+
+  document.addEventListener('keydown', onKeyDown);
+  document.addEventListener('keyup', onKeyUp);
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('click', onMouseClick);
+  
+  animate();
+}
+
+function createWall(x, y, z, width, height, depth) {
+  const wallGeometry = new THREE.BoxGeometry(width, height, depth);
+  const wallTexture = new THREE.TextureLoader().load('https://cdn.onlypuppy7.online/shellshockers2/wall.jpg');
+  wallTexture.wrapS = THREE.RepeatWrapping;
+  wallTexture.wrapT = THREE.RepeatWrapping;
+  wallTexture.repeat.set(width/10, height/10);
+  const wallMaterial = new THREE.MeshBasicMaterial({map: wallTexture});
+  const wall = new THREE.Mesh(wallGeometry, wallMaterial);
+  wall.position.set(x, y, z);
+  scene.add(wall);
+}
+
+function createTower(x, y, z) {
+  const towerGeometry = new THREE.CylinderGeometry(5, 5, 20, 32);
+  const towerTexture = new THREE.TextureLoader().load('https://cdn.onlypuppy7.online/shellshockers2/tower.webp');
+  towerTexture.wrapS = THREE.RepeatWrapping;
+  towerTexture.wrapT = THREE.RepeatWrapping;
+  towerTexture.repeat.set(5, 2);
+  const towerMaterial = new THREE.MeshBasicMaterial({map: towerTexture});
+  const tower = new THREE.Mesh(towerGeometry, towerMaterial);
+  tower.position.set(x, y, z);
+  scene.add(tower);
+}
+
+function createStairs(x, y, z, width, height, depth) {
+  const stairGeometry = new THREE.BoxGeometry(width, height, depth);
+  const stairTexture = new THREE.TextureLoader().load('https://cdn.onlypuppy7.online/shellshockers2/stair.jpeg');
+  stairTexture.wrapS = THREE.RepeatWrapping;
+  stairTexture.wrapT = THREE.RepeatWrapping;
+  stairTexture.repeat.set(width/5, height/5);
+  const stairMaterial = new THREE.MeshBasicMaterial({map: stairTexture});
+  const stairs = new THREE.Mesh(stairGeometry, stairMaterial);
+  stairs.position.set(x, y + height/2, z);
+  scene.add(stairs);
+}
+
+function createEgg() {
+  const eggTexture = new THREE.TextureLoader().load('https://cdn.onlypuppy7.online/shellshockers2/egg.png');
+  const eggMaterial = new THREE.SpriteMaterial({map: eggTexture});
+  const egg = new THREE.Sprite(eggMaterial);
+  egg.scale.set(1, 1.5, 1);
+  egg.position.set(
+    Math.random() * 90 - 45,
+    1,
+    Math.random() * 90 - 45
+  );
+  scene.add(egg);
+  eggs.push(egg);
+}
+
+function onKeyDown(event) {
+  switch (event.code) {
+    case 'KeyW':
+      moveForward = true;
+      break;
+    case 'KeyA':
+      moveLeft = true;
+      break;
+    case 'KeyS':
+      moveBackward = true;
+      break;
+    case 'KeyD':
+      moveRight = true;
+      break;
+    case 'Space':
+      if (canJump) {
+        player.position.y += 2;
+        canJump = false;
+        setTimeout(() => {
+          player.position.y -= 2;
+          canJump = true;
+        }, 500);
+      }
+      break;
+    case 'KeyR':
+      reload();
+      break;
+  }
+}
+
+function onKeyUp(event) {
+  switch (event.code) {
+    case 'KeyW':
+      moveForward = false;
+      break;
+    case 'KeyA':
+      moveLeft = false;
+      break;
+    case 'KeyS':
+      moveBackward = false;
+      break;
+    case 'KeyD':
+      moveRight = false;
+      break;
+  }
+}
+
+function onMouseMove(event) {
+  const movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+  const movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+  
+  camera.rotation.y -= movementX * 0.002;
+  camera.rotation.x -= movementY * 0.002;
+  camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
+}
+
+function onMouseClick() {
+  if (ammo > 0) {
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(new THREE.Vector2(), camera);
+    
+    const intersects = raycaster.intersectObjects(eggs);
+    
+    if (intersects.length > 0) {
+      const hitEgg = intersects[0].object;
+      scene.remove(hitEgg);
+      eggs = eggs.filter(egg => egg !== hitEgg);
+      score += 2;
+      document.getElementById('score').textContent = score;
+      createEgg();
+    }
+    
+    ammo--;
+    document.getElementById('ammoCount').textContent = ammo;
+    
+    if (ammo === 0) {
+      setTimeout(reload, 1000);
+    }
+  }
+}
+
+function reload() {
+  ammo = 10;
+  document.getElementById('ammoCount').textContent = ammo;
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  
+  const speed = 0.1;
+  if (moveForward) player.position.z -= Math.cos(camera.rotation.y) * speed;
+  if (moveBackward) player.position.z += Math.cos(camera.rotation.y) * speed;
+  if (moveLeft) player.position.x -= Math.cos(camera.rotation.y + Math.PI/2) * speed;
+  if (moveRight) player.position.x += Math.cos(camera.rotation.y + Math.PI/2) * speed;
+  
+  camera.position.copy(player.position);
+  
+  eggs.forEach(egg => {
+    egg.position.x += (Math.random() - 0.5) * 0.1;
+    egg.position.z += (Math.random() - 0.5) * 0.1;
+    egg.position.x = Math.max(-45, Math.min(45, egg.position.x));
+    egg.position.z = Math.max(-45, Math.min(45, egg.position.z));
+  });
+  
+  renderer.render(scene, camera);
+}
+
+document.getElementById('startButton').addEventListener('click', () => {
+  document.getElementById('menu').style.display = 'none';
+  init();
+  document.body.requestPointerLock();
+});
+
+document.getElementById('instructionsButton').addEventListener('click', () => {
+  alert('Use WASD to move. Click to shoot eggs. Space to jump. R to reload. Aim with the mouse. Shoot eggs to score points!');
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('menu').style.display = 'block';
+});
+</script>
+</body></html>
