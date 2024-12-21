@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 });
 
+var audio = new Audio('https://cdn.onlypuppy7.online/music.m4a');
 function enterButtonClicked() {
-  var audio = new Audio('https://cdn.onlypuppy7.online/music.m4a');
-  audio.loop = true;
+  audio.play();
 };
