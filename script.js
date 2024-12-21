@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   let y = 0;
   let dx = 2;
   let dy = 2;
+
   let colorIndex = 0; // Index to track color changes
 
   function animateDVD() {
@@ -50,6 +51,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
       y += dy;
 
       textStuff.style.marginLeft = '0px';
+      textStuff.style.marginTop = '0px';
+      textStuff.style.transform = "rotateX(0deg)";
 
       const maxX = window.innerWidth - dvd.clientWidth;
       const maxY = window.innerHeight - dvd.clientHeight;
@@ -72,11 +75,54 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 
   function changeColor() {
-      const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#800000', '#008000', '#000080', '#808000', '#800080', '#008080', '#c0c0c0', '#808080', '#800000', '#ff0000', '#800080', '#ff00ff', '#000080', '#0000ff', '#00ffff', '#008080', '#00ff00', '#008000', '#808000', '#ffff00', '#808080', '#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#800000', '#808000', '#800080', '#008000', '#008080', '#000080']; // Example colors, add more as needed
-      colorIndex = Math.floor(Math.random() * colors.length);
-      dvd.style.filter = `brightness(100%) hue-rotate(${colorIndex * (360 / colors.length)}deg)`;
-      textStuff.style.marginLeft = '1%';
-  }
+      const colors = [
+        // '#ff0000',
+        // '#00ff00',
+        // '#0000ff',
+        // '#ffff00',
+        // '#ff00ff',
+        // '#00ffff',
+        // '#800000',
+        // '#008000',
+        // '#000080',
+        // '#808000',
+        // '#800080',
+        // '#008080',
+        // '#c0c0c0',
+        // '#808080',
+        // '#800000',
+        // '#ff0000',
+        '#800080',
+        '#ff00ff',
+        // '#000080',
+        // '#0000ff',
+        // '#00ffff',
+        // '#008080',
+        // '#00ff00',
+        // '#008000',
+        // '#808000',
+        // '#ffff00',
+        // '#808080',
+        // '#ff0000',
+        // '#00ff00',
+        // '#0000ff',
+        '#ffff00',
+        '#ff00ff',
+        '#00ffff',
+        '#800000',
+        // '#008080',
+        // '#000080'
+      ];
+      // colorIndex = Math.floor(Math.random() * colors.length);
+      // dvd.style.filter = `brightness(100%) hue-rotate(${colorIndex * (360 / colors.length)}deg)`;
+      colorIndex = 0;
+      while (colorIndex <= 90) colorIndex = Math.floor(Math.random() * 36) * 10;
+      dvd.style.filter = `brightness(100%) hue-rotate(${colorIndex}deg)`;
+      textStuff.style.marginLeft = ((Math.random()*2) - 1) + '%';
+      textStuff.style.marginTop = ((Math.random()*90) - .25) + '%';
+      textStuff.style.transform = "rotateX(10deg)";
+    }
+
 
   animateDVD();
 
@@ -88,6 +134,5 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 function enterButtonClicked() {
   var audio = new Audio('https://cdn.onlypuppy7.online/music.m4a');
-  audio.play();
-  audio.loop();
+  audio.loop = true;
 };
