@@ -33,6 +33,7 @@
 function loadPagePls() {
   const container = document.getElementById('textStuff');
   container.classList.add('slide-in');
+  console.log("doing load page pleading")
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
