@@ -1,0 +1,22 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Adder</title>
+</head>
+<body>
+    <h1>Click the link to add text</h1>
+    <a href="#" onclick="addText(event)">Add Text</a>
+    <div id="text-container"></div>
+
+    <script>
+        function addText(event) {
+            event.preventDefault();
+            let container = document.getElementById("text-container");
+            let newText = document.createElement("p");
+            newText.textContent = "New text added!";
+            container.appendChild(newText);
+        };
+    </script>
+</body>
+</html>
