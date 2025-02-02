@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -5,17 +6,19 @@
     <title>Text Adder</title>
 </head>
 <body>
-    <h1>Click the link to add text (1)</h1>
-    <a href="#" onclick="addText(event)">Add Text</a>
+    <h1>Click the link to add text (2)</h1>
+    <a href="#" id="add-text-link">Add Text</a>
     <div id="text-container"></div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("add-text-link").addEventListener("click", addText);
+        });
+
         function addText(event) {
             let container = document.getElementById("text-container");
-            let newText = document.createElement("p");
-            newText.textContent = "New text added!";
-            container.appendChild(newText);
-        };
+            container.innerHTML += "<p>New text added!</p>";
+        }
     </script>
 </body>
 </html>
